@@ -1,7 +1,9 @@
+package ru.practicum.yandex.kanban.models;
+
 import java.util.Objects;
 
 public class Task {
-    private Long id;
+    private Integer id;
     private final String title;
     private final String description;
     private TaskStatus status;
@@ -13,11 +15,11 @@ public class Task {
         this.status = TaskStatus.NEW;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

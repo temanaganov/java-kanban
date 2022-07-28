@@ -1,14 +1,16 @@
+package ru.practicum.yandex.kanban.models;
+
 import java.util.Objects;
 
 public class Subtask extends Task {
-    private final long epicId;
+    private final Integer epicId;
 
-    public Subtask(String title, String description, long epicId) {
+    public Subtask(String title, String description, Integer epicId) {
         super(title, description);
         this.epicId = epicId;
     }
 
-    public long getEpicId() {
+    public Integer getEpicId() {
         return epicId;
     }
 
@@ -18,7 +20,7 @@ public class Subtask extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Subtask subtask = (Subtask) o;
-        return epicId == subtask.epicId;
+        return Objects.equals(epicId, subtask.epicId);
     }
 
     @Override

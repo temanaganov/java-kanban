@@ -1,3 +1,9 @@
+import ru.practicum.yandex.kanban.manager.Manager;
+import ru.practicum.yandex.kanban.models.Epic;
+import ru.practicum.yandex.kanban.models.Subtask;
+import ru.practicum.yandex.kanban.models.Task;
+import ru.practicum.yandex.kanban.models.TaskStatus;
+
 public class Main {
     public static void main(String[] args) {
         Manager manager = new Manager();
