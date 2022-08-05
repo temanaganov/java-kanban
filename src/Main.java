@@ -1,4 +1,5 @@
-import ru.practicum.yandex.kanban.manager.Manager;
+import ru.practicum.yandex.kanban.managers.Managers;
+import ru.practicum.yandex.kanban.managers.TaskManager;
 import ru.practicum.yandex.kanban.models.Epic;
 import ru.practicum.yandex.kanban.models.Subtask;
 import ru.practicum.yandex.kanban.models.Task;
@@ -6,7 +7,7 @@ import ru.practicum.yandex.kanban.models.TaskStatus;
 
 public class Main {
     public static void main(String[] args) {
-        Manager manager = new Manager();
+        TaskManager manager = Managers.getDefault();
         boolean testPassed = test(manager);
 
         if (testPassed) {
@@ -16,7 +17,7 @@ public class Main {
         }
     }
 
-    public static boolean test(Manager manager) {
+    public static boolean test(TaskManager manager) {
         Task firstTask = new Task("1-я задача", "Описание 1-й задачи");
         Task secondTask = new Task("2-я задача", "Описание 2-й задачи");
         Epic firstEpic = new Epic("1-й эпик", "Описание 1-го эпика");
@@ -88,15 +89,26 @@ public class Main {
             return false;
         }
 
-        manager.removeTaskById(firstTask.getId());
+        manager.removeTask(firstTask.getId());
 
         if (manager.getAllTasks().size() != 1) {
             return false;
         }
 
-        manager.removeEpicById(firstEpic.getId());
+        manager.removeEpic(firstEpic.getId());
 
         if (manager.getAllEpics().size() != 1 || manager.getAllSubtasks().size() != 1) {
+            return false;
+        }
+
+        manager.getTask(firstTask.getId());
+        manager.getTask(secondTask.getId());
+        manager.getSubtask(firstSubtask.getId());
+        manager.getSubtask(secondSubtask.getId());
+        manager.getEpic(firstEpic.getId());
+        manager.getEpic(secondEpic.getId());
+
+        if (manager.getHistory().size() != 6) {
             return false;
         }
 
