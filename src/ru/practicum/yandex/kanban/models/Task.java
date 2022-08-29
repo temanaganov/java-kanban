@@ -4,15 +4,13 @@ import java.util.Objects;
 
 public class Task {
     private Integer id;
+    private TaskStatus status = TaskStatus.NEW;
     private final String title;
     private final String description;
-    private TaskStatus status;
 
     public Task(String title, String description) {
-        this.id = null;
         this.title = title;
         this.description = description;
-        this.status = TaskStatus.NEW;
     }
 
     public Integer getId() {

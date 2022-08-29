@@ -5,13 +5,8 @@ import ru.practicum.yandex.kanban.models.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final Map<Integer, Node<Task>> history;
-    private final CustomLinkedList historyList;
-
-    public InMemoryHistoryManager() {
-        this.history = new HashMap<>();
-        this.historyList = new CustomLinkedList();
-    }
+    private final Map<Integer, Node<Task>> history = new HashMap<>();
+    private final CustomLinkedList historyList = new CustomLinkedList();
 
     @Override
     public void add(Task task) {

@@ -1,17 +1,17 @@
 package ru.practicum.yandex.kanban.models;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Epic extends Task {
-    private final ArrayList<Integer> subtasks;
+    private final List<Integer> subtasks = new ArrayList<>();
 
     public Epic(String title, String description) {
         super(title, description);
-        subtasks = new ArrayList<>();
     }
 
-    public ArrayList<Integer> getSubtasks() {
+    public List<Integer> getSubtasks() {
         return subtasks;
     }
 
