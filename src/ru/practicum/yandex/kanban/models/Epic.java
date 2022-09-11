@@ -11,6 +11,12 @@ public class Epic extends Task {
         super(title, description);
     }
 
+    public Epic(int id, TaskStatus status, String title, String description) {
+        super(title, description);
+        this.id = id;
+        this.status = status;
+    }
+
     public List<Integer> getSubtasks() {
         return subtasks;
     }
@@ -35,5 +41,14 @@ public class Epic extends Task {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), subtasks);
+    }
+
+    @Override
+    public String toString() {
+        return id + "," +
+                TaskType.EPIC + "," +
+                title + "," +
+                status + "," +
+                description;
     }
 }

@@ -3,12 +3,19 @@ package ru.practicum.yandex.kanban.models;
 import java.util.Objects;
 
 public class Task {
-    private Integer id;
-    private TaskStatus status = TaskStatus.NEW;
-    private final String title;
-    private final String description;
+    Integer id;
+    TaskStatus status = TaskStatus.NEW;
+    final String title;
+    final String description;
 
     public Task(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
+    public Task(Integer id, TaskStatus status, String title, String description) {
+        this.id = id;
+        this.status = status;
         this.title = title;
         this.description = description;
     }
@@ -48,5 +55,14 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(id, title, description, status);
+    }
+
+    @Override
+    public String toString() {
+        return id + "," +
+                TaskType.TASK + "," +
+                title + "," +
+                status + "," +
+                description;
     }
 }

@@ -6,14 +6,15 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Node<Task>> history = new HashMap<>();
-    private final CustomLinkedList historyList = new CustomLinkedList();
+    private Node<Task> head;
+    private Node<Task> tail;
 
     @Override
     public void add(Task task) {
-        Node<Task> node = historyList.linkLast(task);
+        Node<Task> node = linkLast(task);
 
         if (history.containsKey(task.getId())) {
-            historyList.removeNode(history.get(task.getId()));
+            removeNode(history.get(task.getId()));
         }
 
         history.put(task.getId(), node);
@@ -21,27 +22,35 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        historyList.removeNode(history.get(id));
+        removeNode(history.get(id));
         history.remove(id);
     }
 
     @Override
     public void clear() {
         history.clear();
-        historyList.clear();
+        head = null;
+        tail = null;
     }
 
     @Override
     public List<Task> getHistory() {
-        return historyList.getTasks();
+        return getTasks();
     }
-}
 
-class CustomLinkedList {
-    private Node<Task> head;
-    private Node<Task> tail;
+    private List<Task> getTasks() {
+        List<Task> tasks = new ArrayList<>();
+        Node<Task> current = head;
 
-    public Node<Task> linkLast(Task task) {
+        while (current != null) {
+            tasks.add(current.value);
+            current = current.next;
+        }
+
+        return tasks;
+    }
+
+    private Node<Task> linkLast(Task task) {
         Node<Task> newNode = new Node<>(task, tail, null);
 
         if (tail == null) {
@@ -55,19 +64,7 @@ class CustomLinkedList {
         return newNode;
     }
 
-    public List<Task> getTasks() {
-        List<Task> tasks = new ArrayList<>();
-        Node<Task> current = head;
-
-        while (current != null) {
-            tasks.add(current.value);
-            current = current.next;
-        }
-
-        return tasks;
-    }
-
-    public void removeNode(Node<Task> node) {
+    private void removeNode(Node<Task> node) {
         if (node.equals(head)) {
             head = node.next;
 
@@ -83,20 +80,15 @@ class CustomLinkedList {
         }
     }
 
-    public void clear() {
-        head = null;
-        tail = null;
-    }
-}
+    static class Node<T> {
+        T value;
+        Node<T> prev;
+        Node<T> next;
 
-class Node<T> {
-    T value;
-    Node<T> prev;
-    Node<T> next;
-
-    Node(T value, Node<T> prev, Node<T> next) {
-        this.value = value;
-        this.prev = prev;
-        this.next = next;
+        Node(T value, Node<T> prev, Node<T> next) {
+            this.value = value;
+            this.prev = prev;
+            this.next = next;
+        }
     }
 }

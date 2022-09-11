@@ -4,6 +4,7 @@ import ru.practicum.yandex.kanban.models.Epic;
 import ru.practicum.yandex.kanban.models.Subtask;
 import ru.practicum.yandex.kanban.models.Task;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,4 +44,19 @@ public interface TaskManager {
     List<Subtask> getSubtasksByEpicId(Integer epicId);
 
     List<Task> getHistory();
+
+    static String tasksToString(TaskManager manager) {
+        StringBuilder sb = new StringBuilder();
+        List<Task> tasksList = new ArrayList<>();
+
+        tasksList.addAll(manager.getAllTasks());
+        tasksList.addAll(manager.getAllEpics());
+        tasksList.addAll(manager.getAllSubtasks());
+
+        for (Task task : tasksList) {
+            sb.append(task.toString()).append(System.lineSeparator());
+        }
+
+        return sb.toString();
+    }
 }
