@@ -62,7 +62,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 }
             }
 
-            List<Integer> historyList = HistoryManager.historyFromString(rows[rows.length - 1]);
+            List<Integer> historyList = HistoryManagerUtils.historyFromString(rows[rows.length - 1]);
 
             for (Integer id : historyList) {
                 historyManager.add(allTasks.get(id));
@@ -82,7 +82,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             String data = head +
                     TaskManager.tasksToString(this) +
                     System.lineSeparator() +
-                    HistoryManager.historyToString(history);
+                    HistoryManagerUtils.historyToString(history);
 
             Files.writeString(path, data);
         } catch (IOException err) {
