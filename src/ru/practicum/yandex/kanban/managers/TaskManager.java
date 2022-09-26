@@ -5,15 +5,14 @@ import ru.practicum.yandex.kanban.models.Subtask;
 import ru.practicum.yandex.kanban.models.Task;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public interface TaskManager {
-    Collection<Task> getAllTasks();
+    List<Task> getAllTasks();
 
-    Collection<Epic> getAllEpics();
+    List<Epic> getAllEpics();
 
-    Collection<Subtask> getAllSubtasks();
+    List<Subtask> getAllSubtasks();
 
     Task getTask(Integer id);
 
@@ -33,15 +32,15 @@ public interface TaskManager {
 
     void updateSubtask(Subtask subtask);
 
-    void removeTask(Integer id);
+    void removeTask(int id);
 
-    void removeEpic(Integer epicId);
+    void removeEpic(int epicId);
 
-    void removeSubtask(Integer subtaskId);
+    void removeSubtask(int subtaskId);
 
     void removeAllTasks();
 
-    List<Subtask> getSubtasksByEpicId(Integer epicId);
+    List<Subtask> getSubtasksByEpicId(int epicId);
 
     List<Task> getHistory();
 
@@ -54,7 +53,7 @@ public interface TaskManager {
         tasksList.addAll(manager.getAllSubtasks());
 
         for (Task task : tasksList) {
-            sb.append(task.toString()).append(System.lineSeparator());
+            sb.append(task).append(System.lineSeparator());
         }
 
         return sb.toString();

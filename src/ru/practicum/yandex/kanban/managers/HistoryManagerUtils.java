@@ -3,6 +3,7 @@ package ru.practicum.yandex.kanban.managers;
 import ru.practicum.yandex.kanban.models.Task;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HistoryManagerUtils {
@@ -26,10 +27,7 @@ public class HistoryManagerUtils {
         if (value.equals("0")) return new ArrayList<>();
 
         List<Integer> history = new ArrayList<>();
-
-        for (String id : value.split(",")) {
-            history.add(Integer.parseInt(id));
-        }
+        Arrays.stream(value.split(",")).forEach(id -> history.add(Integer.parseInt(id)));
 
         return history;
     }

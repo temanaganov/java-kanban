@@ -5,25 +5,35 @@ import ru.practicum.yandex.kanban.models.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
-    public FileBackedTasksManager() {}
+    private final Path path;
+
+    public FileBackedTasksManager(Path path) {
+        this.path = path;
+    }
 
     public FileBackedTasksManager(
+            Path path,
             Map<Integer, Task> tasks,
             Map<Integer, Epic> epics,
             Map<Integer, Subtask> subtasks,
             HistoryManager history,
             int startId
     ) {
+        this.path = path;
         this.tasks = tasks;
         this.epics = epics;
         this.subtasks = subtasks;
         this.history = history;
         this.id = startId;
+        this.prioritizedTasks.addAll(tasks.values());
+        this.prioritizedTasks.addAll(epics.values());
+        this.prioritizedTasks.addAll(subtasks.values());
     }
 
     public static FileBackedTasksManager loadFromFile(Path path) {
@@ -72,13 +82,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             throw new ManagerSaveException("Ошибка при восстановлении данных");
         }
 
-        return new FileBackedTasksManager(tasks, epics, subtasks, historyManager, startId);
+        return new FileBackedTasksManager(path, tasks, epics, subtasks, historyManager, startId);
     }
 
     private void save() {
         try {
-            Path path = Path.of("data.csv");
-            String head = "id,type,name,status,description,epic" + System.lineSeparator();
+            String head = "id,type,name,status,description,start time,duration,epic" + System.lineSeparator();
             String data = head +
                     TaskManager.tasksToString(this) +
                     System.lineSeparator() +
@@ -97,12 +106,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         String title = splittedValue[2];
         TaskStatus status = TaskStatus.valueOf(splittedValue[3]);
         String description = splittedValue[4];
-        Integer epicId = TaskType.valueOf(type) == TaskType.SUBTASK ? Integer.parseInt(splittedValue[5]) : null;
+        Instant startTime = Instant.ofEpochMilli(Long.parseLong(splittedValue[5]));
+        long duration = Long.parseLong(splittedValue[6]);
+        Integer epicId = TaskType.valueOf(type) == TaskType.SUBTASK ? Integer.parseInt(splittedValue[7]) : null;
 
         return switch (TaskType.valueOf(type)) {
-            case TASK -> new Task(id, status, title, description);
-            case EPIC -> new Epic(id, status, title, description);
-            case SUBTASK -> new Subtask(id, status, title, description, epicId);
+            case TASK -> new Task(id, status, title, description, startTime, duration);
+            case EPIC -> new Epic(id, status, title, description, startTime, duration);
+            case SUBTASK -> new Subtask(id, status, title, description, epicId, startTime, duration);
         };
     }
 
@@ -167,19 +178,19 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public void removeTask(Integer taskId) {
+    public void removeTask(int taskId) {
         super.removeTask(taskId);
         save();
     }
 
     @Override
-    public void removeEpic(Integer epicId) {
+    public void removeEpic(int epicId) {
         super.removeEpic(epicId);
         save();
     }
 
     @Override
-    public void removeSubtask(Integer subtaskId) {
+    public void removeSubtask(int subtaskId) {
         super.removeSubtask(subtaskId);
         save();
     }

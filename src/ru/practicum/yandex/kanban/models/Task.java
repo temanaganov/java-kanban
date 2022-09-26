@@ -1,23 +1,30 @@
 package ru.practicum.yandex.kanban.models;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class Task {
-    Integer id;
-    TaskStatus status = TaskStatus.NEW;
-    final String title;
-    final String description;
+    protected Integer id;
+    protected TaskStatus status = TaskStatus.NEW;
+    protected String title;
+    protected String description;
+    protected Instant startTime;
+    protected long duration;
 
-    public Task(String title, String description) {
+    public Task(String title, String description, Instant startTime, long duration) {
         this.title = title;
         this.description = description;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
-    public Task(Integer id, TaskStatus status, String title, String description) {
+    public Task(Integer id, TaskStatus status, String title, String description, Instant startTime, long duration) {
         this.id = id;
         this.status = status;
         this.title = title;
         this.description = description;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
     public Integer getId() {
@@ -32,8 +39,16 @@ public class Task {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public TaskStatus getStatus() {
@@ -42,6 +57,15 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public Instant getStartTime() {
+        return startTime;
+    }
+
+    public Instant getEndTime() {
+        long SECONDS_IN_MINUTE = 60L;
+        return startTime.plusSeconds(duration * SECONDS_IN_MINUTE);
     }
 
     @Override
@@ -63,6 +87,8 @@ public class Task {
                 TaskType.TASK + "," +
                 title + "," +
                 status + "," +
-                description;
+                description + "," +
+                startTime.toEpochMilli() + "," +
+                duration;
     }
 }

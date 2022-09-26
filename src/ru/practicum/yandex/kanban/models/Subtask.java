@@ -1,17 +1,18 @@
 package ru.practicum.yandex.kanban.models;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class Subtask extends Task {
     private final Integer epicId;
 
-    public Subtask(String title, String description, Integer epicId) {
-        super(title, description);
+    public Subtask(String title, String description, Integer epicId, Instant startTime, long duration) {
+        super(title, description, startTime, duration);
         this.epicId = epicId;
     }
 
-    public Subtask(Integer id, TaskStatus status, String title, String description, Integer epicId) {
-        super(id, status, title, description);
+    public Subtask(Integer id, TaskStatus status, String title, String description, Integer epicId, Instant startTime, long duration) {
+        super(id, status, title, description, startTime, duration);
         this.epicId = epicId;
     }
 
@@ -40,6 +41,8 @@ public class Subtask extends Task {
                 title + "," +
                 status + "," +
                 description + "," +
+                startTime.toEpochMilli() + "," +
+                duration + "," +
                 epicId;
     }
 }

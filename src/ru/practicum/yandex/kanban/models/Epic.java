@@ -1,20 +1,24 @@
 package ru.practicum.yandex.kanban.models;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class Epic extends Task {
     private final List<Integer> subtasks = new ArrayList<>();
+    private Instant endTime = Instant.ofEpochMilli(0);
 
     public Epic(String title, String description) {
-        super(title, description);
+        super(title, description, Instant.ofEpochMilli(0), 0);
     }
 
-    public Epic(int id, TaskStatus status, String title, String description) {
-        super(title, description);
+    public Epic(int id, TaskStatus status, String title, String description, Instant startTime, long duration) {
+        super(title, description, startTime, duration);
         this.id = id;
         this.status = status;
+        this.endTime = super.getEndTime();
     }
 
     public List<Integer> getSubtasks() {
@@ -27,6 +31,47 @@ public class Epic extends Task {
 
     public void removeSubtask(Subtask subtask) {
         subtasks.remove(subtask.getId());
+    }
+
+    public void update(Map<Integer, Subtask> allSubtasks) {
+        if (getSubtasks().isEmpty()) {
+            this.status = TaskStatus.NEW;
+            return;
+        }
+
+        int newCount = 0;
+        int doneCount = 0;
+        Instant startTime = Instant.ofEpochMilli(0);
+        Instant endTime = Instant.ofEpochMilli(0);
+
+        for (Integer subtaskId : getSubtasks()) {
+            Subtask subtask = allSubtasks.get(subtaskId);
+            if (subtask.getStatus() == TaskStatus.NEW) newCount += 1;
+            if (subtask.getStatus() == TaskStatus.DONE) doneCount += 1;
+            if (subtask.getStartTime().isBefore(startTime)) startTime = subtask.getStartTime();
+            if (subtask.getEndTime().isAfter(endTime)) endTime = subtask.getEndTime();
+        }
+
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.duration = (startTime.toEpochMilli() - endTime.toEpochMilli()) / 1000 / 60;
+
+        if (getSubtasks().size() == newCount) {
+            this.status = TaskStatus.NEW;
+            return;
+        }
+
+        if (getSubtasks().size() == doneCount) {
+            this.status = TaskStatus.DONE;
+            return;
+        }
+
+        this.status = TaskStatus.IN_PROGRESS;
+    }
+
+    @Override
+    public Instant getEndTime() {
+        return endTime;
     }
 
     @Override
@@ -49,6 +94,8 @@ public class Epic extends Task {
                 TaskType.EPIC + "," +
                 title + "," +
                 status + "," +
-                description;
+                description + "," +
+                startTime.toEpochMilli() + "," +
+                duration;
     }
 }
