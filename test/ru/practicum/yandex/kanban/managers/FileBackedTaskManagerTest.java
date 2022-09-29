@@ -8,13 +8,12 @@ import ru.practicum.yandex.kanban.models.Task;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileBackedTaskManagerTest extends TaskManagerTest {
-    static Path path = Path.of("data.test.csv");
+    public static final Path path = Path.of("data.test.csv");
 
     @BeforeEach
     public void beforeEach() {
@@ -32,9 +31,9 @@ public class FileBackedTaskManagerTest extends TaskManagerTest {
 
     @Test
     public void shouldCorrectlyLoadDataFromFile() {
-        Task task = manager.createTask(new Task("Title", "Description", Instant.now(), 0));
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Task task = manager.createTask(createTask());
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask = manager.createSubtask(createSubtask(epic));
         manager.getTask(task.getId());
         manager.getSubtask(subtask.getId());
 

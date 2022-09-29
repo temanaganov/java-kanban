@@ -1,5 +1,6 @@
 package ru.practicum.yandex.kanban.models;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +42,8 @@ public class Epic extends Task {
 
         int newCount = 0;
         int doneCount = 0;
-        Instant startTime = Instant.ofEpochMilli(0);
-        Instant endTime = Instant.ofEpochMilli(0);
+        Instant startTime = allSubtasks.get(subtasks.get(0)).getStartTime();
+        Instant endTime = allSubtasks.get(subtasks.get(0)).getEndTime();
 
         for (Integer subtaskId : getSubtasks()) {
             Subtask subtask = allSubtasks.get(subtaskId);
@@ -54,7 +55,7 @@ public class Epic extends Task {
 
         this.startTime = startTime;
         this.endTime = endTime;
-        this.duration = (startTime.toEpochMilli() - endTime.toEpochMilli()) / 1000 / 60;
+        this.duration = Duration.between(startTime, endTime).toMinutes();
 
         if (getSubtasks().size() == newCount) {
             this.status = TaskStatus.NEW;

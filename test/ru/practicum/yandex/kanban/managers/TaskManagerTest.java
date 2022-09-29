@@ -15,9 +15,21 @@ import static org.junit.jupiter.api.Assertions.*;
 public abstract class TaskManagerTest {
     TaskManager manager;
 
+    protected Task createTask() {
+        return new Task("Title", "Description", Instant.now(), 0);
+    }
+
+    protected Epic createEpic() {
+        return new Epic("Title", "Description");
+    }
+
+    protected Subtask createSubtask(Epic epic) {
+        return new Subtask("Title", "Description", epic.getId(), Instant.now(), 0);
+    }
+
     @Test
     public void shouldCreateTask() {
-        Task task = manager.createTask(new Task("Title", "Description", Instant.now(), 0));
+        Task task = manager.createTask(createTask());
 
         List<Task> tasks = manager.getAllTasks();
 
@@ -28,7 +40,7 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldCreateEpic() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
+        Epic epic = manager.createEpic(createEpic());
 
         List<Epic> epics = manager.getAllEpics();
 
@@ -40,8 +52,8 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldCreateSubtask() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask = manager.createSubtask(createSubtask(epic));
 
         List<Subtask> subtasks = manager.getAllSubtasks();
 
@@ -54,7 +66,7 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldUpdateTaskStatus() {
-        Task task = manager.createTask(new Task("Title", "Description", Instant.now(), 0));
+        Task task = manager.createTask(createTask());
 
         task.setStatus(TaskStatus.IN_PROGRESS);
         manager.updateTask(task);
@@ -64,7 +76,7 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldUpdateEpicTitle() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
+        Epic epic = manager.createEpic(createEpic());
 
         epic.setTitle("New title");
         manager.updateEpic(epic);
@@ -74,8 +86,8 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldUpdateSubtaskStatusToInProgress() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask = manager.createSubtask(createSubtask(epic));
 
         subtask.setStatus(TaskStatus.IN_PROGRESS);
         manager.updateSubtask(subtask);
@@ -86,8 +98,8 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldUpdateSubtaskStatusToDone() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask = manager.createSubtask(createSubtask(epic));
 
         subtask.setStatus(TaskStatus.DONE);
         manager.updateSubtask(subtask);
@@ -98,9 +110,9 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldUpdateEpicStatusToInProgress() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask1 = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
-        Subtask subtask2 = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask1 = manager.createSubtask(createSubtask(epic));
+        Subtask subtask2 = manager.createSubtask(createSubtask(epic));
 
         subtask1.setStatus(TaskStatus.DONE);
         subtask2.setStatus(TaskStatus.IN_PROGRESS);
@@ -112,9 +124,9 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldRemoveAllTasksEpicsSubtasks() {
-        manager.createTask(new Task("Title", "Description", Instant.now(), 0));
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        manager.createTask(createTask());
+        Epic epic = manager.createEpic(createEpic());
+        manager.createSubtask(createSubtask(epic));
 
         manager.removeAllTasks();
 
@@ -125,8 +137,8 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldCalculateStartAndEndTimeOfEpicWith1Subtask() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask1 = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.ofEpochMilli(0), 0));
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask1 = manager.createSubtask(createSubtask(epic));
 
         assertEquals(subtask1.getStartTime(), epic.getStartTime());
         assertEquals(subtask1.getEndTime(), epic.getEndTime());
@@ -134,9 +146,9 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldCalculateStartAndEndTimeOfEpicWith2Subtasks() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask1 = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.ofEpochMilli(0), 0));
-        Subtask subtask2 = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask1 = manager.createSubtask(createSubtask(epic));
+        Subtask subtask2 = manager.createSubtask(createSubtask(epic));
 
         assertEquals(subtask1.getStartTime(), epic.getStartTime());
         assertEquals(subtask2.getEndTime(), epic.getEndTime());
@@ -144,7 +156,7 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldRemoveTask() {
-        Task task = manager.createTask(new Task("Title", "Description", Instant.now(), 0));
+        Task task = manager.createTask(createTask());
 
         manager.removeTask(task.getId());
 
@@ -153,7 +165,7 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldNotRemoveTaskIfBadId() {
-        Task task = manager.createTask(new Task("Title", "Description", Instant.now(), 0));
+        Task task = manager.createTask(createTask());
         manager.removeTask(0);
 
         assertEquals(List.of(task), manager.getAllTasks());
@@ -161,9 +173,9 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldRemoveEpic() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
-        manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Epic epic = manager.createEpic(createEpic());
+        manager.createSubtask(createSubtask(epic));
+        manager.createSubtask(createSubtask(epic));
 
         manager.removeEpic(epic.getId());
 
@@ -173,9 +185,9 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldNotRemoveEpicIfBadId() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask1 = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
-        Subtask subtask2 = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask1 = manager.createSubtask(createSubtask(epic));
+        Subtask subtask2 = manager.createSubtask(createSubtask(epic));
 
         manager.removeEpic(0);
 
@@ -185,8 +197,8 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldRemoveSubtask() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask = manager.createSubtask(createSubtask(epic));
 
         manager.removeSubtask(subtask.getId());
 
@@ -196,8 +208,8 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldNotRemoveSubtaskIfBadId() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask = manager.createSubtask(createSubtask(epic));
 
         manager.removeSubtask(0);
 
@@ -207,10 +219,10 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldReturnSubtasksByEpicId() {
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask1 = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
-        Subtask subtask2 = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
-        Subtask subtask3 = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask1 = manager.createSubtask(createSubtask(epic));
+        Subtask subtask2 = manager.createSubtask(createSubtask(epic));
+        Subtask subtask3 = manager.createSubtask(createSubtask(epic));
 
         assertEquals(List.of(subtask1, subtask2, subtask3), manager.getSubtasksByEpicId(epic.getId()));
     }
@@ -222,9 +234,9 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldReturnHistoryWith3Tasks() {
-        Task task = manager.createTask(new Task("Title", "Description", Instant.now(), 0));
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Task task = manager.createTask(createTask());
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask = manager.createSubtask(createSubtask(epic));
 
         manager.getTask(task.getId());
         manager.getEpic(epic.getId());
@@ -235,9 +247,9 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldReturnHistoryWith1TaskAfterRemoving() {
-        Task task = manager.createTask(new Task("Title", "Description", Instant.now(), 0));
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Task task = manager.createTask(createTask());
+        Epic epic = manager.createEpic(createEpic());
+        manager.createSubtask(createSubtask(epic));
 
         manager.getTask(task.getId());
         manager.removeEpic(epic.getId());
@@ -252,9 +264,9 @@ public abstract class TaskManagerTest {
 
     @Test
     public void shouldConvertTasksToString() {
-        Task task = manager.createTask(new Task("Title", "Description", Instant.now(), 0));
-        Epic epic = manager.createEpic(new Epic("Title", "Description"));
-        Subtask subtask = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 0));
+        Task task = manager.createTask(createTask());
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask = manager.createSubtask(createSubtask(epic));
 
         assertEquals(task + "\n" + epic + "\n" + subtask + "\n", TaskManager.tasksToString(manager));
     }

@@ -13,17 +13,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryHistoryManagerTest {
     HistoryManager manager;
+    private int id = 0;
 
     @BeforeEach
     public void beforeEach() {
+        id = 0;
         manager = new InMemoryHistoryManager();
+    }
+
+    private Task createTask() {
+        return new Task(++id, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
     }
 
     @Test
     public void shouldAddTasksToHistory() {
-        Task task1 = new Task(1, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
-        Task task2 = new Task(2, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
-        Task task3 = new Task(3, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
+        Task task1 = createTask();
+        Task task2 = createTask();
+        Task task3 = createTask();
 
         manager.add(task1);
         manager.add(task2);
@@ -34,9 +40,9 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void shouldMoveToEndTaskIfIsAlreadyPresent() {
-        Task task1 = new Task(1, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
-        Task task2 = new Task(2, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
-        Task task3 = new Task(3, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
+        Task task1 = createTask();
+        Task task2 = createTask();
+        Task task3 = createTask();
 
         manager.add(task1);
         manager.add(task2);
@@ -48,9 +54,9 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void shouldRemoveTask() {
-        Task task1 = new Task(1, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
-        Task task2 = new Task(2, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
-        Task task3 = new Task(3, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
+        Task task1 = createTask();
+        Task task2 = createTask();
+        Task task3 = createTask();
 
         manager.add(task1);
         manager.add(task2);
@@ -63,7 +69,7 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void shouldRemoveOnlyOneTask() {
-        Task task = new Task(1, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
+        Task task = createTask();
 
         manager.add(task);
         manager.remove(task.getId());
@@ -73,7 +79,7 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void shouldNotRemoveTaskWithBadId() {
-        Task task = new Task(1, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
+        Task task = createTask();
 
         manager.add(task);
         manager.remove(0);
@@ -83,9 +89,9 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void shouldClearHistory() {
-        manager.add(new Task(1, TaskStatus.NEW, "Title", "Description", Instant.now(), 0));
-        manager.add(new Task(2, TaskStatus.NEW, "Title", "Description", Instant.now(), 0));
-        manager.add(new Task(3, TaskStatus.NEW, "Title", "Description", Instant.now(), 0));
+        manager.add(createTask());
+        manager.add(createTask());
+        manager.add(createTask());
 
         manager.clear();
 
