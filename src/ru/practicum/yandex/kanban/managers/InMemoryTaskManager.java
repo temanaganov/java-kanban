@@ -12,12 +12,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected Map<Integer, Subtask> subtasks = new HashMap<>();
     protected HistoryManager history = Managers.getDefaultHistory();
     protected int id = 0;
-    private final Comparator<Task> taskComparator = Comparator.comparing(Task::getStartTime);
-    protected Set<Task> prioritizedTasks = new TreeSet<>(taskComparator);
-
-    private int getNextId() {
-        return ++id;
-    }
+    protected Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     @Override
     public List<Task> getAllTasks() {
@@ -192,5 +187,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     private List<Task> getPrioritizedTasks() {
         return prioritizedTasks.stream().toList();
+    }
+
+    private int getNextId() {
+        return ++id;
     }
 }

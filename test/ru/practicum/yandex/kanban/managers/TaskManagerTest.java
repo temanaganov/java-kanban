@@ -13,19 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class TaskManagerTest {
-    TaskManager manager;
-
-    protected Task createTask() {
-        return new Task("Title", "Description", Instant.now(), 0);
-    }
-
-    protected Epic createEpic() {
-        return new Epic("Title", "Description");
-    }
-
-    protected Subtask createSubtask(Epic epic) {
-        return new Subtask("Title", "Description", epic.getId(), Instant.now(), 0);
-    }
+    protected TaskManager manager;
 
     @Test
     public void shouldCreateTask() {
@@ -147,8 +135,8 @@ public abstract class TaskManagerTest {
     @Test
     public void shouldCalculateStartAndEndTimeOfEpicWith2Subtasks() {
         Epic epic = manager.createEpic(createEpic());
-        Subtask subtask1 = manager.createSubtask(createSubtask(epic));
-        Subtask subtask2 = manager.createSubtask(createSubtask(epic));
+        Subtask subtask1 = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now(), 1));
+        Subtask subtask2 = manager.createSubtask(new Subtask("Title", "Description", epic.getId(), Instant.now().plusSeconds(300), 500));
 
         assertEquals(subtask1.getStartTime(), epic.getStartTime());
         assertEquals(subtask2.getEndTime(), epic.getEndTime());
@@ -277,5 +265,17 @@ public abstract class TaskManagerTest {
             manager.createTask(new Task("Title", "Description", Instant.ofEpochMilli(0), 1000));
             manager.createTask(new Task("Title", "Description", Instant.ofEpochMilli(100), 1000));
         });
+    }
+
+    protected Task createTask() {
+        return new Task("Title", "Description", Instant.now(), 0);
+    }
+
+    protected Epic createEpic() {
+        return new Epic("Title", "Description");
+    }
+
+    protected Subtask createSubtask(Epic epic) {
+        return new Subtask("Title", "Description", epic.getId(), Instant.now(), 0);
     }
 }

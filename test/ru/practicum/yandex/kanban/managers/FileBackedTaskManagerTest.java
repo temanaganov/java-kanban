@@ -8,12 +8,13 @@ import ru.practicum.yandex.kanban.models.Task;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileBackedTaskManagerTest extends TaskManagerTest {
-    public static final Path path = Path.of("data.test.csv");
+    private final Path path = Path.of("data.test.csv");
 
     @BeforeEach
     public void beforeEach() {
@@ -43,6 +44,20 @@ public class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(List.of(epic), manager.getAllEpics());
         assertEquals(List.of(subtask), manager.getAllSubtasks());
         assertEquals(List.of(task, subtask), manager.getHistory());
+    }
+
+    @Test
+    public void shouldCorrectlyLoadDataFromFileWithEmptyHistory() {
+        Task task = manager.createTask(createTask());
+        Epic epic = manager.createEpic(createEpic());
+        Subtask subtask = manager.createSubtask(createSubtask(epic));
+
+        manager = FileBackedTasksManager.loadFromFile(path);
+
+        assertEquals(List.of(task), manager.getAllTasks());
+        assertEquals(List.of(epic), manager.getAllEpics());
+        assertEquals(List.of(subtask), manager.getAllSubtasks());
+        assertEquals(Collections.EMPTY_LIST, manager.getHistory());
     }
 
     @Test

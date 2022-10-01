@@ -85,38 +85,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return new FileBackedTasksManager(path, tasks, epics, subtasks, historyManager, startId);
     }
 
-    private void save() {
-        try {
-            String head = "id,type,name,status,description,start time,duration,epic" + System.lineSeparator();
-            String data = head +
-                    TaskManager.tasksToString(this) +
-                    System.lineSeparator() +
-                    HistoryManagerUtils.historyToString(history);
-
-            Files.writeString(path, data);
-        } catch (IOException err) {
-            throw new ManagerSaveException("Ошибка при сохранении данных");
-        }
-    }
-
-    static private Task fromString(String value) {
-        String[] splittedValue = value.split(",");
-        int id = Integer.parseInt(splittedValue[0]);
-        String type = splittedValue[1];
-        String title = splittedValue[2];
-        TaskStatus status = TaskStatus.valueOf(splittedValue[3]);
-        String description = splittedValue[4];
-        Instant startTime = Instant.ofEpochMilli(Long.parseLong(splittedValue[5]));
-        long duration = Long.parseLong(splittedValue[6]);
-        Integer epicId = TaskType.valueOf(type) == TaskType.SUBTASK ? Integer.parseInt(splittedValue[7]) : null;
-
-        return switch (TaskType.valueOf(type)) {
-            case TASK -> new Task(id, status, title, description, startTime, duration);
-            case EPIC -> new Epic(id, status, title, description, startTime, duration);
-            case SUBTASK -> new Subtask(id, status, title, description, epicId, startTime, duration);
-        };
-    }
-
     @Override
     public Task getTask(Integer id) {
         Task task = super.getTask(id);
@@ -199,5 +167,37 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     public void removeAllTasks() {
         super.removeAllTasks();
         save();
+    }
+
+    private void save() {
+        try {
+            String head = "id,type,name,status,description,start time,duration,epic" + System.lineSeparator();
+            String data = head +
+                    TaskManager.tasksToString(this) +
+                    System.lineSeparator() +
+                    HistoryManagerUtils.historyToString(history);
+
+            Files.writeString(path, data);
+        } catch (IOException err) {
+            throw new ManagerSaveException("Ошибка при сохранении данных");
+        }
+    }
+
+    static private Task fromString(String value) {
+        String[] splittedValue = value.split(",");
+        int id = Integer.parseInt(splittedValue[0]);
+        String type = splittedValue[1];
+        String title = splittedValue[2];
+        TaskStatus status = TaskStatus.valueOf(splittedValue[3]);
+        String description = splittedValue[4];
+        Instant startTime = Instant.ofEpochMilli(Long.parseLong(splittedValue[5]));
+        long duration = Long.parseLong(splittedValue[6]);
+        Integer epicId = TaskType.valueOf(type) == TaskType.SUBTASK ? Integer.parseInt(splittedValue[7]) : null;
+
+        return switch (TaskType.valueOf(type)) {
+            case TASK -> new Task(id, status, title, description, startTime, duration);
+            case EPIC -> new Epic(id, status, title, description, startTime, duration);
+            case SUBTASK -> new Subtask(id, status, title, description, epicId, startTime, duration);
+        };
     }
 }

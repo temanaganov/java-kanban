@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HistoryManagerUtilsTest {
-    HistoryManager manager;
+    private HistoryManager manager;
 
     @BeforeEach
     public void beforeEach() {

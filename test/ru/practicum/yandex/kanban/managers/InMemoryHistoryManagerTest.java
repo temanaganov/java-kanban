@@ -12,17 +12,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryHistoryManagerTest {
-    HistoryManager manager;
+    private HistoryManager manager;
     private int id = 0;
 
     @BeforeEach
     public void beforeEach() {
         id = 0;
         manager = new InMemoryHistoryManager();
-    }
-
-    private Task createTask() {
-        return new Task(++id, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
     }
 
     @Test
@@ -96,5 +92,9 @@ public class InMemoryHistoryManagerTest {
         manager.clear();
 
         assertEquals(Collections.EMPTY_LIST, manager.getHistory());
+    }
+
+    private Task createTask() {
+        return new Task(++id, TaskStatus.NEW, "Title", "Description", Instant.now(), 0);
     }
 }
