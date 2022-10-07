@@ -37,6 +37,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     public static FileBackedTasksManager loadFromFile(Path path) {
+        if (!Files.exists(path)) {
+            return new FileBackedTasksManager(path);
+        }
+
         Map<Integer, Task> allTasks = new HashMap<>();
         Map<Integer, Task> tasks = new HashMap<>();
         Map<Integer, Epic> epics = new HashMap<>();
