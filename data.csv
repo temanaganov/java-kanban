@@ -1,5 +1,9 @@
 id,type,name,status,description,start time,duration,epic
 3,TASK,Title,NEW,Description,12312324,32
+4,TASK,Новая задача,NEW,Описание задачи,2131234141,20
+5,TASK,Новая задача,NEW,Описание задачи,2131234141,20
+6,TASK,Новая задача,NEW,Описание задачи,2131234141,20
+7,TASK,Новая задача 1,NEW,Описание задачи 1,21312341,20
 1,EPIC,Title,NEW,Description,1231241241241,32
 
-1
+1,7,6,5

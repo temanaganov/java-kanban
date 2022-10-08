@@ -57,7 +57,7 @@ public abstract class TaskManagerTest {
         Task task = manager.createTask(createTask());
 
         task.setStatus(TaskStatus.IN_PROGRESS);
-        manager.updateTask(task);
+        manager.updateTask(task.getId(), task);
 
         assertEquals(TaskStatus.IN_PROGRESS, manager.getTask(task.getId()).getStatus());
     }
@@ -67,7 +67,7 @@ public abstract class TaskManagerTest {
         Epic epic = manager.createEpic(createEpic());
 
         epic.setTitle("New title");
-        manager.updateEpic(epic);
+        manager.updateEpic(epic.getId(), epic);
 
         assertEquals("New title", manager.getEpic(epic.getId()).getTitle());
     }
@@ -78,7 +78,7 @@ public abstract class TaskManagerTest {
         Subtask subtask = manager.createSubtask(createSubtask(epic));
 
         subtask.setStatus(TaskStatus.IN_PROGRESS);
-        manager.updateSubtask(subtask);
+        manager.updateSubtask(subtask.getId(), subtask);
 
         assertEquals(TaskStatus.IN_PROGRESS, manager.getSubtask(subtask.getId()).getStatus());
         assertEquals(TaskStatus.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
@@ -90,7 +90,7 @@ public abstract class TaskManagerTest {
         Subtask subtask = manager.createSubtask(createSubtask(epic));
 
         subtask.setStatus(TaskStatus.DONE);
-        manager.updateSubtask(subtask);
+        manager.updateSubtask(subtask.getId(), subtask);
 
         assertEquals(TaskStatus.DONE, manager.getSubtask(subtask.getId()).getStatus());
         assertEquals(TaskStatus.DONE, manager.getEpic(epic.getId()).getStatus());
@@ -104,8 +104,8 @@ public abstract class TaskManagerTest {
 
         subtask1.setStatus(TaskStatus.DONE);
         subtask2.setStatus(TaskStatus.IN_PROGRESS);
-        manager.updateSubtask(subtask1);
-        manager.updateSubtask(subtask2);
+        manager.updateSubtask(subtask1.getId(), subtask1);
+        manager.updateSubtask(subtask2.getId(), subtask2);
 
         assertEquals(TaskStatus.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
     }
