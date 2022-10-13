@@ -59,9 +59,4 @@ public class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(List.of(subtask), manager.getAllSubtasks());
         assertEquals(Collections.EMPTY_LIST, manager.getHistory());
     }
-
-    @Test
-    public void shouldThrowManagerSaveExceptionIfFileDoesNotExist() {
-       assertThrows(ManagerSaveException.class, () -> FileBackedTasksManager.loadFromFile(path));
-    }
 }

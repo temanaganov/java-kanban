@@ -1,4 +1,4 @@
-package ru.practicum.yandex.kanban.server;
+package ru.practicum.yandex.kanban.utils;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -10,7 +10,11 @@ import java.time.Instant;
 public class GsonInstantAdapter extends TypeAdapter<Instant> {
     @Override
     public void write(JsonWriter jsonWriter, Instant instant) throws IOException {
-        jsonWriter.value(instant.toEpochMilli());
+        if (instant == null) {
+            jsonWriter.value(Instant.ofEpochMilli(0).toEpochMilli());
+        } else {
+            jsonWriter.value(instant.toEpochMilli());
+        }
     }
 
     @Override

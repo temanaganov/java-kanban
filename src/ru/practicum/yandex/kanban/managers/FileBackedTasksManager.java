@@ -176,7 +176,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         save();
     }
 
-    private void save() {
+    protected void save() {
         try {
             String head = "id,type,name,status,description,start time,duration,epic" + System.lineSeparator();
             String data = head +

@@ -1,20 +1,19 @@
 package ru.practicum.yandex.kanban.server;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import ru.practicum.yandex.kanban.managers.TaskManager;
 import ru.practicum.yandex.kanban.models.Epic;
 import ru.practicum.yandex.kanban.models.Subtask;
 import ru.practicum.yandex.kanban.models.Task;
+import ru.practicum.yandex.kanban.utils.GsonUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.time.Instant;
 
 public class TasksController {
     private final TaskManager taskService;
-    private final Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new GsonInstantAdapter()).create();
+    private final Gson gson = GsonUtils.getInstance();
 
     public TasksController(TaskManager taskService) {
         this.taskService = taskService;
@@ -65,7 +64,7 @@ public class TasksController {
 
         if (epic == null) return;
 
-        send(httpExchange, taskService.createEpic(epic), 201);
+        send(httpExchange, taskService.createEpic(new Epic(epic)), 201);
     }
 
     public void createSubtask(HttpExchange httpExchange) {
@@ -145,28 +144,24 @@ public class TasksController {
     }
 
     private void send(HttpExchange httpExchange, Object data) {
-        System.out.println(gson.toJson(data));
         String response = gson.toJson(data);
 
-
         try (OutputStream os = httpExchange.getResponseBody()) {
-            httpExchange.sendResponseHeaders(200, 0);
+            httpExchange.sendResponseHeaders(200, response.getBytes().length);
             os.write(response.getBytes());
         } catch (IOException exception) {
-            System.out.println("fdsfds");
+            System.out.println(exception.getMessage());
         }
     }
 
     private void send(HttpExchange httpExchange, Object data, int code) {
-        System.out.println(gson.toJson(data));
         String response = gson.toJson(data);
 
-
         try (OutputStream os = httpExchange.getResponseBody()) {
-            httpExchange.sendResponseHeaders(code, 0);
+            httpExchange.sendResponseHeaders(code, response.getBytes().length);
             os.write(response.getBytes());
         } catch (IOException exception) {
-            System.out.println("fdsfds");
+            System.out.println(exception.getMessage());
         }
     }
 
@@ -174,7 +169,7 @@ public class TasksController {
         try {
             httpExchange.sendResponseHeaders(204, -1);
         } catch (IOException exception) {
-            System.out.println("fdsfds");
+            System.out.println(exception.getMessage());
         }
     }
 }

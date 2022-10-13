@@ -22,6 +22,10 @@ public class Epic extends Task {
         this.endTime = super.getEndTime();
     }
 
+    public Epic(Epic epic){
+        this(epic.title, epic.description);
+    }
+
     public List<Integer> getSubtasks() {
         return subtasks;
     }
