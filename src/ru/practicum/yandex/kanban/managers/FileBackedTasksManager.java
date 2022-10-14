@@ -1,6 +1,10 @@
 package ru.practicum.yandex.kanban.managers;
 
-import ru.practicum.yandex.kanban.models.*;
+import ru.practicum.yandex.kanban.models.Task;
+import ru.practicum.yandex.kanban.models.Epic;
+import ru.practicum.yandex.kanban.models.Subtask;
+import ru.practicum.yandex.kanban.models.TaskType;
+import ru.practicum.yandex.kanban.models.TaskStatus;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
+public class FileBackedTasksManager extends InMemoryTaskManager {
     private final Path path;
 
     public FileBackedTasksManager(Path path) {
@@ -58,18 +62,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
                 if (task.getId() > startId) startId = task.getId();
 
+                allTasks.put(task.getId(), task);
+
                 switch (TaskType.valueOf(type)) {
                     case TASK -> {
-                        allTasks.put(task.getId(), task);
                         tasks.put(task.getId(), task);
                     }
                     case EPIC -> {
-                        allTasks.put(task.getId(), task);
                         epics.put(task.getId(), (Epic) task);
                     }
                     case SUBTASK -> {
                         Subtask subtask = (Subtask) task;
-                        allTasks.put(task.getId(), task);
                         subtasks.put(task.getId(), subtask);
                         epics.get(subtask.getEpicId()).addSubtask(subtask);
                     }
@@ -78,9 +81,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
             List<Integer> historyList = HistoryManagerUtils.historyFromString(rows[rows.length - 1]);
 
-            for (Integer id : historyList) {
-                historyManager.add(allTasks.get(id));
-            }
+            historyList.forEach(id -> historyManager.add(allTasks.get(id)));
 
         } catch (IOException err) {
             throw new ManagerSaveException("Ошибка при восстановлении данных");
@@ -191,15 +192,15 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     static private Task fromString(String value) {
-        String[] splittedValue = value.split(",");
-        int id = Integer.parseInt(splittedValue[0]);
-        String type = splittedValue[1];
-        String title = splittedValue[2];
-        TaskStatus status = TaskStatus.valueOf(splittedValue[3]);
-        String description = splittedValue[4];
-        Instant startTime = Instant.ofEpochMilli(Long.parseLong(splittedValue[5]));
-        long duration = Long.parseLong(splittedValue[6]);
-        Integer epicId = TaskType.valueOf(type) == TaskType.SUBTASK ? Integer.parseInt(splittedValue[7]) : null;
+        String[] splitValue = value.split(",");
+        int id = Integer.parseInt(splitValue[0]);
+        String type = splitValue[1];
+        String title = splitValue[2];
+        TaskStatus status = TaskStatus.valueOf(splitValue[3]);
+        String description = splitValue[4];
+        Instant startTime = Instant.ofEpochMilli(Long.parseLong(splitValue[5]));
+        long duration = Long.parseLong(splitValue[6]);
+        Integer epicId = TaskType.valueOf(type) == TaskType.SUBTASK ? Integer.parseInt(splitValue[7]) : null;
 
         return switch (TaskType.valueOf(type)) {
             case TASK -> new Task(id, status, title, description, startTime, duration);

@@ -15,14 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 public class HttpTaskManager extends FileBackedTasksManager {
-    URI uri;
-    Gson gson = GsonUtils.getInstance();
-    KVTaskClient taskClient;
+    private final Gson gson = GsonUtils.getInstance();
+    private final KVTaskClient taskClient;
 
     public HttpTaskManager(URI uri) {
         super(null);
         try {
-            this.uri = uri;
             taskClient = new KVTaskClient(uri);
         } catch (IOException | InterruptedException e) {
             throw new ManagerSaveException("Ошибка при подключении к KVServer");

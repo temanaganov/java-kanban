@@ -5,7 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 import java.util.function.Consumer;
 
 public class Router {
-    HttpExchange httpExchange;
+    private final HttpExchange httpExchange;
 
     public Router(HttpExchange httpExchange) {
         this.httpExchange = httpExchange;
